@@ -1,18 +1,20 @@
 import { Router } from "express";
+import authorize from "../middleware/auth.middleware.js";
+import { createSubscription, getAllSubscriptions, getSubscriptionDetails, getUserSubscriptions } from "../controllers/subscripiton.controller.js";
 
 const subscriptionRouter = Router();
 
-subscriptionRouter.get('/', (req, res) => res.send({ title: "Get All Subscriptions" }))
+subscriptionRouter.get('/', authorize, getAllSubscriptions)
 
-subscriptionRouter.get('/:id', (req, res) => res.send({ title: "Get Subscription Details" }))
+subscriptionRouter.get('/:id', authorize, getSubscriptionDetails)
 
-subscriptionRouter.post('/', (req, res) => res.send({ title: "Create Subscription" }))
+subscriptionRouter.post('/', authorize, createSubscription)
 
 subscriptionRouter.put('/:id', (req, res) => res.send({ title: "Update Subscription" }))
 
 subscriptionRouter.delete('/:id', (req, res) => res.send({ title: "Delete Subscription" }))
 
-subscriptionRouter.get('/user/:id', (req, res) => res.send({ title: "Get All  User Subscriptions" }))
+subscriptionRouter.get('/user/:id', authorize, getUserSubscriptions )
 
 subscriptionRouter.put('/:id/cancel', (req, res) => res.send({ title: "Cancel Subscription" }))
 
