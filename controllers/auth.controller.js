@@ -70,10 +70,9 @@ export const signIn = async (req, res, next) => {
                 const error = new Error("Invalid password");
                 error.statusCode = 401;
                 throw error
-            }
+            }   
 
-            const token = jwt.sign({userId: user._id}, JWT_SECRET, {expiresIn: JWT_EXPIRES_IN})
-
+            const token = jwt.sign({userId: user._id}, JWT_SECRET, {expiresIn: JWT_EXPIRES_IN}) 
             res.status(200).json({
                 success: true,
                 message: "Login Successfully",
