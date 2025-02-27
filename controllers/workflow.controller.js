@@ -4,6 +4,8 @@ const require = createRequire(import.meta.url)
 const {serve} = require('@upstash/workflow/express')
 
 import Subscription from '../models/subscription.model.js';
+import { sendReminderEmial } from '../utlis/send-email.js';
+import { now } from 'mongoose';
 
 const REMINDERS = [7, 5, 2, 1];
 
@@ -27,7 +29,11 @@ export const sendReminders = serve( async (context) => {
             await sleepUntilReminder(context, `Reminder ${daysBefore} days before`, reminderDate)
         }
 
-        await triggerReminder(context, `Reminder ${daysBefore} days before`)
+        if(dayjs().isSame(reminderDate, 'day')){
+
+            await triggerReminder(context, `${daysBefore} days before reminder`, subscription)
+        }
+
     }
 })
 
@@ -45,8 +51,14 @@ const sleepUntilReminder = async (context, label, date) => {
 }
 
 
-const  triggerReminder = async (context, label) => {
-    return await context.run(label, () => {
-        console.log(`Triggering ${label} reminder`)
+const  triggerReminder = async (context, label, subscription) => {
+    return await context.run(label, async () => {
+        console.log(`Triggering ${label} reminder`);
+        await sendReminderEmial({
+            to: subscription.user.email,
+            type: label,
+            subscription,
+
+        })
     })
 }
